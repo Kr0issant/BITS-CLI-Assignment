@@ -1,0 +1,26 @@
+Commands executed:
+1. mkdir Question-3/testing
+2. touch Question-3/testing/original_file
+3. echo "Hello World" > Question-3/testing/original_file (add dummy data)
+4. ln Question-3/testing/original_file Question-3/testing/hard_link
+5. ln -s Question-3/testing/original_file Question-3/testing/soft_link
+6. ls -li Question-3/testing/
+7. rm Question-3/testing/original_file
+8. cat Question-3/testing/hard_link
+9. cat Question-3/testing/soft_link
+
+Inode Numbers:
+original_file - 418473
+hard_link - 418473
+soft_link - 418467
+
+The hard link shares the same inode number while the sym link has a separate one.
+The hard link points to the data block while the sym link just points to the path/filename of the target.
+
+After deleting original_file:
+hard_link remains unaffected and still has all of its contents. Deleting original_file just brought the inode's link count from 2 to 1. The data is preserved until it becomes 0.
+soft_link immediately breaks after deleting original_file. It is pointing to the filename original_file, which no longer exists, leaving a dangling pointer.
+
+Conclusion:
+- On accidentally deleting a file, any existing hard links can act as an backup because the inode is still there. But symbolic links will instantly break.
+- Hard links are just additional directory entries pointing to an existing inode. Soft links are separate files that contain a text string containing a path.
