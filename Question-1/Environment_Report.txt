@@ -1,0 +1,14 @@
+1. `whoami` command prints my current username, `groups` command shows the groups the current user is associated with and `id` shows the ID of the user and the groups.
+Which is what happened when I ran all of the commands.
+
+2. `echo $SHELL` command prints the current shell being used by accessing the $SHELL environment variable.
+Ran as expected and printed the correct path of zsh
+
+3. `pwd` (print working directory) command prints the current working directory I am in.
+Self-explanatory. Ran as expected.
+
+4. `ls` command lists all the (non-hidden) files and directories from my current directory.
+Printed the directories (excluding .git) and files in the repository since that is my current workspace.
+
+5. `ping -c 8.8.8.8` command tries to send 4 packets to the IP address 8.8.8.8 (Google's DNS), testing raw internet connectivity first. `ping -c 4 google.com` tries to send 4 packets to google.com, resolving the address through a DNS server in between. This tests whether both internet connectivity and DNS resolution are working properly.
+Ran fine and sent and received all 4 packets (64 bytes each) without loss but some latency (around 150ms on average) on both commands, indicating slightly slow internet.
