@@ -1,0 +1,32 @@
+Commands executed:
+1. mkdir -p Question-2/secure_workspace/project/files/ && mkdir -p ./Question-2/secure_workspace/project/docs
+2. sudo groupadd workspace_team
+3. sudo chown -R root:workspace_team Question-2/secure_workspace/project 
+4. umask 0027 (or `echo "umask 0027" >> ~/.zshrc` for persistent umask)
+5. sudo chmod -R 750 Question-2/secure_workspace/project && sudo chmod -R g+s Question-2/secure_workspace/project
+
+Directory Structure:
+secure_workspace/
+    project/
+        docs/
+        files/
+
+File Permissions (Before modifications):
+umask 0022
+/project - 755 (drwxr-xr-x)
+/project/docs/ - 755 (drwxr-xr-x)
+/project/files/ - 755 (drwxr-xr-x)
+
+(Owner can read, write, execute. Both group and others can read, execute.)
+
+File Permissions (After modifications):
+umask 0027
+/project - 2750 (drwxr-s---)
+/project/docs/ - 2750 (drwxr-s---)
+/project/files/ - 2750 (drwxr-s---)
+
+(Owner can read, write, execute. Group can read, execute. Others can't do anything)
+
+Others don't have any permissions (read/write/execute). Any user on the system who is not part of workspace_team group is blocked from entering the directory or accessing the data.
+Since we used g+s in `chmod`, any newly created files/directories in the workspace inherit the group ownership of the parent directory (i.e. workspace_team).
+The owner is still root so regular team members cannot accidentally delete or modify the top-level directory structure, while being able to collaborate in the sub-directories.
