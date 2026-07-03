@@ -1,0 +1,25 @@
+Commands executed:
+1. lsblk
+2. df -h
+3. df -i
+
+Available Storage Devices:
+/dev/sdd is the main 1TB virtual disk supporting the root (/) filesystem.
+/dev/sda and /dev/sdb are small, read-only system infrastructure disks.
+/dev/sdc provides 2GB of dedicated Swap space for memory overflow.
+
+Mounted File Systems and Disk Usage Statistics:
+Linux (WSL) Storage: The primary partition (/dev/sdd) has 912GB (95%) of free space available.
+Host Windows Storage: The host C:\ drive has 85% utilization (72GB free), while the D:\ drive has 71% utilization (139GB free).
+
+Inode Utilization:
+The primary volume uses just 1% of its 67 million available inodes. The system can easily handle applications with heavy file/cache counts.
+
+Storage Health:
+The virtual Linux environment itself is in normal health, with high storage and inode availability (95%+ free).
+Because this is a WSL2 instance, the 1TB Linux disk expands dynamically onto the Windows C:\ host drive. Since the physical C:\ drive only has 72GB of actual space left, the application will experience disk write failures if it attempts to grow past 72GB.
+
+Recommendations for Improving Storage Utilization:
+1. Host Maintenance: Free up physical space on the Windows host C:\ drive to secure a higher expansion ceiling for the virtual environment.
+2. Data Offloading: Configure application heavy data/backups to utilize /mnt/d/, as it possesses double the available physical host space (139GB) compared to C:\.
+3. Log Management: Set up an aggressive 'logrotate' configuration to ensure application logs are compressed and truncated weekly, preventing silent space consumption.
