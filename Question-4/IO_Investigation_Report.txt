@@ -1,0 +1,25 @@
+Commands executed:
+1. lsof | head -n 20 (for a specific misbehaving process, `lsof -p PID`)
+2. echo "success" > success.txt ; cat success.txt
+3. ls /non_existent_folder 2> error.txt ; cat error.txt
+4. ulimit -a
+5. ulimit -n
+
+Open Files:
+The 'lsof' (List Open Files) utility was utilized to inspect active system and process-level file handles. The command outputs columns detailing the Command (process name), PID, User, File Descriptor (FD), Type, and the absolute path of the Node or file.
+
+Output and Error Redirection:
+The '>' operator captured the string "success" from the standard output stream and redirected it into 'success.txt'. The 'cat' command confirmed that standard data writes behave as intended.
+Executing 'ls' on a non-existent directory triggered a kernel error stream message. The '2>' operator isolated this error stream (Stream 2), preventing it from rendering on the terminal display and instead writing it directly to 'error.txt'. 'cat error.txt' verified that the error message was properly trapped.
+
+Resouce Limits:
+'ulimit -a' displayed all environmental boundaries imposed on the current shell session context (including maximum stack size, core file sizes, and virtual memory limits).
+'ulimit -n' specifically isolated the "open files" threshold. On this system environment, the maximum number of concurrent file descriptors a single process can hold is capped at 1048576. If an application attempts to instantiate a file descriptor exceeding this limit, the operating system will reject the request and throw an "EMFILE: Too many open files" exception.
+
+How Linux manages File I/O:
+Linux treats almost all system resources (hardware devices, storage files, network sockets, pipes) abstractly as streams of bytes ("Everything is a file").
+1. Every process owns its private descriptor array. The File Descriptor (FD) is simply an integer index (0, 1, 2, 3...) pointing directly into the system's central lookup layer.
+2. This table tracks every active file instance across the OS. It maintains critical state metrics, primarily the file status flags (e.g., read, write, append) and the current byte offset pointer (where the next read or write operation will take place).
+3. The Inode holds the physical file properties like permissions, file size, owner ID, and the exact physical disk block addresses where the actual data resides.
+
+When a command like 'ls 2> error.txt' is run, the shell uses system calls such as dup2() to clone file handles. It manipulates the process's internal table, altering the destination pointer of index 2 (stderr) away from the default terminal device (/dev/pts/) and over to the open file table entry referencing 'error.txt'. The application remains completely unaware that its destination output endpoint was dynamically swapped out.
